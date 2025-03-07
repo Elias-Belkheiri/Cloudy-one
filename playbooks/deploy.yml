@@ -1,0 +1,41 @@
+---
+- name: Deploy application with Docker Compose
+  hosts: all
+  become: true
+  vars:
+    repo_url: "https://github.com/Elias-Belkheiri/Cloudy-one"
+    project_dir: "/opt/Cloudy-one"
+    compose_dir: "{{ project_dir }}/docker"
+
+  tasks:
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Create project directory
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Clone/Pull repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        force: yes
+        version: main
+
+    - name: Copy .env file if it exists locally
+      copy:
+        src: .env
+        dest: "{{ compose_dir }}/.env"
+      ignore_errors: yes
+
+    - name: Run docker-compose
+      docker_compose:
+        project_src: "{{ compose_dir }}"
+        state: present
+        pull: yes
+        remove_orphans: yes
