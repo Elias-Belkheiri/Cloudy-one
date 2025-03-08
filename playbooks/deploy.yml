@@ -8,12 +8,6 @@
     compose_dir: "{{ project_dir }}/docker"
 
   tasks:
-    - name: Install git
-      apt:
-        name: git
-        state: present
-        update_cache: yes
-
     - name: Create project directory
       file:
         path: "{{ project_dir }}"
@@ -29,13 +23,13 @@
 
     - name: Copy .env file if it exists locally
       copy:
-        src: .env
+        src: ../.env
         dest: "{{ compose_dir }}/.env"
       ignore_errors: yes
 
-    - name: Run docker-compose
-      docker_compose:
-        project_src: "{{ compose_dir }}"
-        state: present
-        pull: yes
-        remove_orphans: yes
+    - name: build and run the containers
+      ansible.builtin.command: chdir=/opt/Cloudy-one/docker docker compose up --build -d
+      register: docker_result
+    - name: Display the output
+      debug:
+        msg: "{{ docker_result.stdout }}"
