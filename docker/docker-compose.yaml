@@ -1,11 +1,11 @@
 services:
   wordpress:
-    image: wordpress:php8.3-fpm
+    image: ubacode/ready_wordpress
     restart: always
     env_file: .env
     volumes:
       - wordpress:/var/www/html
-      - "./scripts/wordpress_secure_installation.sh:/secure_install.sh"
+      - "./scripts/wordpress_secure_i nstallation.sh:/secure_install.sh:ro"
     networks:
       - wordpress
     depends_on:
