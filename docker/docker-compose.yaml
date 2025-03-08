@@ -16,7 +16,7 @@ services:
     restart: always
     volumes:
       - wordpress:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - ../nginx-conf:/etc/nginx/conf.d
     ports:
       - 80:80
     networks:
